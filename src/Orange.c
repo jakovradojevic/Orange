@@ -93,6 +93,8 @@ static int g_toyMoved;
 static int g_toyStill;
 static int g_chimePause;
 static int g_rightExit;
+static int g_keepExternalWave;
+static wchar_t g_droppedWave[MAX_PATH];
 static const short *g_anim;
 static int g_animHold = 4;
 static int g_animLoops = 1;
@@ -620,7 +622,7 @@ static const short kBob[48] = {
 
 static void PlayOrangeWave(int soundId)
 {
-    if (!g_soundOn || soundId == 0) {
+    if (g_keepExternalWave || !g_soundOn || soundId == 0) {
         return;
     }
     PlaySoundW(MAKEINTRESOURCEW(soundId), g_inst, SND_ASYNC | SND_RESOURCE | SND_NODEFAULT);
@@ -1526,13 +1528,15 @@ static LRESULT CALLBACK MateProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
         OnTick();
         return 0;
     case WM_DROPFILES: {
-        wchar_t path[MAX_PATH];
         HDROP drop = (HDROP)wParam;
-        if (DragQueryFileW(drop, 0, path, MAX_PATH) > 0) {
-            int n = lstrlenW(path);
-            if (n >= 4 && (lstrcmpiW(path + n - 4, L".wav") == 0)) {
-                PlaySoundW(path, NULL, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
+        if (DragQueryFileW(drop, 0, g_droppedWave, MAX_PATH) > 0) {
+            int n = lstrlenW(g_droppedWave);
+            if (n >= 4 && (lstrcmpiW(g_droppedWave + n - 4, L".wav") == 0)) {
+                /* Babble would play 118.wav and stop the dropped file. */
+                g_keepExternalWave = 1;
                 PlayChosenAction(50);
+                g_keepExternalWave = 0;
+                PlaySoundW(g_droppedWave, NULL, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
             }
         }
         DragFinish(drop);
