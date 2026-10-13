@@ -44,9 +44,7 @@ Test switches, not part of normal play:
 
 ## What it does on its own
 
-Walk and run fill most of the 80-entry table. The rarer slots are Doze, Rest, Push-ups, calm fishing, Smoke, Babble, Hoop, Read, and Cry. Rest is replaced by Doze when Always Active is on.
-
-The flying cast (Fish tug) is not in that table. Open it from the Animations menu.
+Walk and run still fill most of the random table, with Doze and Rest behind them. Every other gesture, including the flying cast, is in that table once. One extra slot opens the flower a sheep can eat. Rest is replaced by Doze when Always Active is on.
 
 The menu names are the original `Orange.exe` list:
 

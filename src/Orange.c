@@ -46,15 +46,18 @@ typedef struct FloorScan {
     int floorY;
 } FloorScan;
 
-/* Word table at DS:0x212. rand() % 80 indexes it. 14 is walk, 8 is run.
-   22 is standing smoke, 68 is calm fishing. The tug (70) is menu-only. */
-static const int kActionTable[80] = {
+/* The original 80-word table still leads: walk, run, doze and rest.
+   Each gesture that used to be menu-only is appended once, plus the
+   eatable bloom (69) so a sheep can find the flower. */
+static const int kActionTable[] = {
     14, 14, 8, 8, 14, 14, 8,
     8, 14, 14, 8, 8, 14, 14, 8, 8, 14, 14, 8, 8, 14, 14, 8,
     8, 14, 14, 8, 8, 14, 14, 8, 8, 14, 14, 8, 8, 14, 14, 8,
     8, 14, 8, 24, 29, 14, 8, 24, 29, 14, 8, 24, 29, 14, 8, 24,
     29, 14, 8, 24, 29, 14, 8, 24, 29, 14, 8, 24, 29, 18, 68, 22,
-    50, 44, 44, 48, 52, 50, 52, 22, 48
+    50, 44, 44, 48, 52, 50, 52, 22, 48,
+    10, 16, 20, 27, 33, 39, 54, 56, 58, 60, 62, 70, 72, 76, 80, 101, 123, 129,
+    69
 };
 
 static HINSTANCE g_inst;
@@ -429,7 +432,7 @@ static void PickAction(const RECT *work)
         return;
     }
     {
-        int action = kActionTable[rand() % 80];
+        int action = kActionTable[rand() % (int)(sizeof(kActionTable) / sizeof(kActionTable[0]))];
         /* Always Active only skips sleep during wandering. The list still plays Rest. */
         if (g_noSleep && action == 29) {
             action = 24;
@@ -824,6 +827,16 @@ static void BeginAction(int action)
         return;
     case 129:
         StartDrift(kBerries, 4, 8, 6);
+        return;
+    case 69:
+        g_unbloom = 0;
+        g_gate = 0;
+        g_left = 0;
+        g_vx = 0;
+        g_vy = 0;
+        g_sprite = MATE_BLOOM_FIRST;
+        g_status = MATE_STATUS_BLOOM;
+        g_state = 69;
         return;
     default:
         g_anim = NULL;
