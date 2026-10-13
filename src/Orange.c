@@ -1172,6 +1172,15 @@ static void TickState(const RECT *work)
             break;
         }
         g_sprite = kFlower[g_gate];
+        if (g_sprite >= MATE_BLOOM_FIRST && g_sprite <= MATE_BLOOM_LAST) {
+            /* The split flower is the one sheep eat. Stay open until one does. */
+            g_gate = g_sprite - MATE_BLOOM_FIRST;
+            g_left = 0;
+            g_unbloom = 0;
+            g_status = MATE_STATUS_BLOOM;
+            g_state = 69;
+            break;
+        }
         if (g_sprite == 84) {
             g_x += g_dir * 3;
         } else if (g_sprite == 83) {

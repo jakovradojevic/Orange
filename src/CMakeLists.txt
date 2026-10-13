@@ -7,6 +7,7 @@ set(ORANGE_RC_ASSETS
   101.bmp 102.bmp 103.bmp 104.bmp 105.bmp 106.bmp
   107.bmp 108.bmp 109.bmp 110.bmp 111.bmp
   113.wav 114.wav 115.wav 116.wav 117.wav 118.wav
+  Orange.manifest
 )
 list(TRANSFORM ORANGE_RC_ASSETS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 set_source_files_properties(Orange.rc PROPERTIES OBJECT_DEPENDS "${ORANGE_RC_ASSETS}")

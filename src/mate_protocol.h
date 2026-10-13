@@ -1,6 +1,6 @@
 /* Shared window protocol between Scmpoo and Orange.
    Include after windows.h. Both processes must run at the same integrity
-   level (Scmpoo asks for administrator) or WM_USER will not cross. */
+   level or WM_USER will not cross. */
 
 #ifndef MATE_PROTOCOL_H
 #define MATE_PROTOCOL_H

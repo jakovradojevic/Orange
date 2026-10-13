@@ -33,7 +33,7 @@ Feet stand on the top of a taskbar that is docked to the bottom of that monitor.
 
 ### Run it with the sheep
 
-Scmpoo's manifest requests administrator. Window messages do not cross integrity levels, so start Orange with **Run as administrator** too. Otherwise the pets will not see each other.
+Neither program asks for administrator. Window messages do not cross integrity levels, so start them the same way.
 
 Test switches, not part of normal play:
 
@@ -44,7 +44,7 @@ Test switches, not part of normal play:
 
 ## What it does on its own
 
-Walk and run still fill most of the random table, with Doze and Rest behind them. Every other gesture, including the flying cast, is in that table once. One extra slot opens the flower a sheep can eat. Rest is replaced by Doze when Always Active is on.
+Walk and run still fill most of the random table, with Doze and Rest behind them. Every other gesture, including the flying cast, is in that table once. When the flower animation splits open, it stays that way until a sheep eats it. Rest is replaced by Doze when Always Active is on.
 
 The menu names are the original `Orange.exe` list:
 
