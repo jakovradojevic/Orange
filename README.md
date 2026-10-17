@@ -17,7 +17,7 @@ The two programs stay separate. They share one header, `src/mate_protocol.h`, an
 The orange drops onto the work area, then mostly walks and runs. A tick is 108 ms. Up to 8 instances can run at once.
 
 - **Drag** with the left button to move it. Letting go returns it to idle.
-- **Left double-click** — settings (gravity, sound, always active).
+- **Left double-click** — settings (gravity, sound, always active, always on top).
 - **Ctrl+Shift+left double-click** — animation picker.
 - **Right-click** — Settings, Animations, or Exit.
 - **Right double-click** — exit.
@@ -25,7 +25,7 @@ The orange drops onto the work area, then mostly walks and runs. A tick is 108 m
 
 Settings are stored in `scmate.ini` next to the executable.
 
-**Gravity** drops it onto window tops and onto the desktop floor. **Sound On** plays the original cries. **Always Active** keeps the random picker from choosing sleep; Rest can still be played from the menu.
+**Gravity** drops it onto window tops and onto the desktop floor. **Sound On** plays the original cries. **Always Active** keeps the random picker from choosing sleep; Rest can still be played from the menu. **Always on top** (on by default) keeps the orange above other windows.
 
 ### Floor
 

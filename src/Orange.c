@@ -28,6 +28,7 @@
 #define IDC_GRAVITY 1001
 #define IDC_SOUND 1002
 #define IDC_ACTIVE 1003
+#define IDC_ONTOP 1004
 #define IDC_EXIT 3
 #define IDB_HELP 4
 #define IDC_ANIM_LIST 1040
@@ -85,6 +86,7 @@ static int g_grabY;
 static int g_soundOn = 1;
 static int g_gravityOn = 1;
 static int g_noSleep = 1;
+static int g_alwaysOnTop = 1;
 static int g_status;
 static int g_unbloom;
 static HWND g_caught;
@@ -131,6 +133,7 @@ static void LoadConfig(void)
     g_soundOn = GetPrivateProfileIntW(L"Orange", L"Sound", 1, g_ini) ? 1 : 0;
     g_gravityOn = GetPrivateProfileIntW(L"Orange", L"Gravity", 1, g_ini) ? 1 : 0;
     g_noSleep = GetPrivateProfileIntW(L"Orange", L"NoSleep", 1, g_ini) ? 1 : 0;
+    g_alwaysOnTop = GetPrivateProfileIntW(L"Orange", L"OnTop", 1, g_ini) ? 1 : 0;
 }
 
 static void SaveConfig(void)
@@ -138,6 +141,18 @@ static void SaveConfig(void)
     WritePrivateProfileStringW(L"Orange", L"Sound", g_soundOn ? L"1" : L"0", g_ini);
     WritePrivateProfileStringW(L"Orange", L"Gravity", g_gravityOn ? L"1" : L"0", g_ini);
     WritePrivateProfileStringW(L"Orange", L"NoSleep", g_noSleep ? L"1" : L"0", g_ini);
+    WritePrivateProfileStringW(L"Orange", L"OnTop", g_alwaysOnTop ? L"1" : L"0", g_ini);
+}
+
+static void ApplyAlwaysOnTop(void)
+{
+    HWND insertAfter;
+
+    if (g_hwnd == NULL) {
+        return;
+    }
+    insertAfter = g_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+    SetWindowPos(g_hwnd, insertAfter, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 }
 
 static int LoadSheet(int resourceId, int index)
@@ -1294,6 +1309,7 @@ static INT_PTR CALLBACK SettingsProc(HWND dialog, UINT message, WPARAM wParam, L
         CheckDlgButton(dialog, IDC_GRAVITY, g_gravityOn ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(dialog, IDC_SOUND, g_soundOn ? BST_CHECKED : BST_UNCHECKED);
         CheckDlgButton(dialog, IDC_ACTIVE, g_noSleep ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(dialog, IDC_ONTOP, g_alwaysOnTop ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
@@ -1301,7 +1317,9 @@ static INT_PTR CALLBACK SettingsProc(HWND dialog, UINT message, WPARAM wParam, L
             g_gravityOn = IsDlgButtonChecked(dialog, IDC_GRAVITY) == BST_CHECKED;
             g_soundOn = IsDlgButtonChecked(dialog, IDC_SOUND) == BST_CHECKED;
             g_noSleep = IsDlgButtonChecked(dialog, IDC_ACTIVE) == BST_CHECKED;
+            g_alwaysOnTop = IsDlgButtonChecked(dialog, IDC_ONTOP) == BST_CHECKED;
             SaveConfig();
+            ApplyAlwaysOnTop();
             if (!g_soundOn) {
                 PlaySoundW(NULL, NULL, 0);
             }
@@ -1323,7 +1341,8 @@ static INT_PTR CALLBACK SettingsProc(HWND dialog, UINT message, WPARAM wParam, L
                 L"Drop a .wav file on it to play that sound.\n\n"
                 L"Gravity drops it onto the taskbar and window tops.\n"
                 L"Sound On plays the original cries.\n"
-                L"Always Active keeps it from falling asleep.",
+                L"Always Active keeps it from falling asleep.\n"
+                L"Always on top keeps it above other windows.",
                 L"Orange", MB_OK | MB_ICONINFORMATION);
             return TRUE;
         default:
@@ -1803,7 +1822,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command, int sh
     g_y = work.top;
     g_vy = 0;
     g_hwnd = CreateWindowExW(
-        WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE,
+        WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE
+            | (g_alwaysOnTop ? WS_EX_TOPMOST : 0),
         L"Orange", L"Screen Mate", WS_POPUP,
         g_x, g_y, CELL, CELL, g_owner, NULL, instance, NULL);
     if (g_hwnd == NULL) {
